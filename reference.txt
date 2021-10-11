@@ -1,0 +1,28 @@
+https://github.com/cansik/yolo-hand-detection
+https://www.analyticsvidhya.com/blog/2021/07/building-a-hand-tracking-system-using-opencv/
+
+Yolo: https://arxiv.org/pdf/1506.02640.pdf
+Yolov4: https://arxiv.org/pdf/2004.10934.pdf
+Classification: https://github.com/DrGFreeman/rps-cv
+
+Datasets
+https://www.kaggle.com/drgfreeman/rockpaperscissors
+
+
+
+Segmentation:
+    Write code from scratch using OpenCV? Or train our own hand gesture detector?
+Specifically, there are out of box tools to do that. For example, you can use media-pipe-hand https://google.github.io/mediapipe/solutions/hands from google to complete the whole project… Can we use their code?
+
+There are pre-trained NN who can do hand gesture landmarks detection.
+There are also methods that use classical image recognition methods to achieve such a goal. In high level, binarization - smoothing - convex difference + convex hull. 
+
+https://medium.com/analytics-vidhya/hand-detection-and-finger-counting-using-opencv-python-5b594704eb08
+
+Classification:
+    Outsourced data?
+    Create our own data? From part I.
+Train a CNN. (Like minist…. As long as we have large enough  datasets..)
+
+
+YOLO, a new approach to object detection. Prior work on object detection repurposes classifiers to per- form detection. Instead, we frame object detection as a re- gression problem to spatially separated bounding boxes and associated class probabilities. A single neural network pre- dicts bounding boxes and class probabilities directly from full images in one evaluation. Since the whole detection pipeline is a single network, it can be optimized end-to-end directly on detection performance.
