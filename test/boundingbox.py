@@ -4,7 +4,7 @@
 # Created Date: 2021-10-10 9:36
 # Author: Yutong Dai yutongdai95@gmail.com
 # -----
-# Last Modified: 2021-10-10 11:07
+# Last Modified: 2021-10-11 8:21
 # Modified By: Yutong Dai yutongdai95@gmail.com
 # 
 # This code is published under the MIT License.
@@ -13,6 +13,7 @@
 # Date      	By 	Comments
 # ----------	---	----------------------------------------------------------
 '''
+import numpy as np
 import cv2
 import mediapipe as mp
 mphands = mp.solutions.hands
@@ -21,7 +22,7 @@ mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 
 _, frame = cap.read()
-
+bgimage = np.ones_like(frame, dtype=np.uint8) * 225
 h, w, c = frame.shape
 tol=1
 while cap.isOpened():
@@ -35,6 +36,7 @@ while cap.isOpened():
     result = hands.process(framergb)
     hand_landmarks = result.multi_hand_landmarks
     if hand_landmarks:
+        bgimage = np.ones_like(frame, dtype=np.uint8) * 225
         for idx, handLMs in enumerate(hand_landmarks):
             x_max = 0
             y_max = 0
@@ -50,10 +52,12 @@ while cap.isOpened():
                     y_max = y
                 if y < y_min:
                     y_min = y
-            print(f"hand:{idx} | BBOX:{x_min, y_min, x_max, y_max}")
             x_min, y_min, x_max, y_max = x_min-tol, y_min-tol, x_max+tol, y_max+tol
+            print(f"hand:{idx} | BBOX:{x_min, y_min, x_max, y_max}")
             cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
-    cv2.imshow('MediaPipe Hands', cv2.flip(frame, 1))
+            bgimage[y_min:y_max, x_min:x_max, :] = frame[y_min:y_max, x_min:x_max, :]
+    cv2.imshow('Live', cv2.flip(frame, 1))
+    cv2.imshow('Hands', cv2.flip(bgimage, 1))
     if hand_landmarks:
         print("==== next frame ====")
     if cv2.waitKey(5) & 0xFF == 27:
