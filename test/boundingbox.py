@@ -4,7 +4,7 @@
 # Created Date: 2021-10-10 9:36
 # Author: Yutong Dai yutongdai95@gmail.com
 # -----
-# Last Modified: 2021-10-11 8:35
+# Last Modified: 2021-10-11 9:41
 # Modified By: Yutong Dai yutongdai95@gmail.com
 # 
 # This code is published under the MIT License.
@@ -24,8 +24,10 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 _, frame = cap.read()
 bgimage = np.ones_like(frame, dtype=np.uint8) * 225
+# img_binary = None
 h, w, c = frame.shape
-tol=10
+tol=0
+target_ratio = 2/3
 while cap.isOpened():
     success, frame = cap.read()
     if not success:
@@ -54,11 +56,30 @@ while cap.isOpened():
                 if y < y_min:
                     y_min = y
             x_min, y_min, x_max, y_max = x_min-tol, y_min-tol, x_max+tol, y_max+tol
+            xlen = x_max - x_min
+            ylen = y_max - y_min
+            ratio = xlen / ylen
+            if ratio <= target_ratio:
+                xlen = ylen * target_ratio
+                offset = int(xlen//2 + 1)
+                x_mid = (x_min + x_max) // 2
+                x_min = max(0,x_mid - offset)
+                x_max = min(x_mid + offset, w)
+            else:
+                ylen = xlen / target_ratio
+                offset = int(ylen // 2 + 1)
+                y_mid = (y_min + y_max) // 2
+                y_min = max(y_mid - offset, 0)
+                y_max = min(y_mid + offset, h)
             print(f"hand:{idx} | BBOX:{x_min, y_min, x_max, y_max}")
             cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
             bgimage[y_min:y_max, x_min:x_max, :] = frame[y_min:y_max, x_min:x_max, :]
+            # grayimg = cv2.cvtColor(bgimage, cv2.COLOR_BGR2GRAY)
+            # _, img_binary = cv2.threshold(grayimg, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     cv2.imshow('Live', cv2.flip(frame, 1))
     cv2.imshow('Hands', cv2.flip(bgimage, 1))
+    # if img_binary is not None:
+        # cv2.imshow('Binary Hands', cv2.flip(img_binary, 1))
     if hand_landmarks:
         print("==== next frame ====")
     if cv2.waitKey(5) & 0xFF == 27:
