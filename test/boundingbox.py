@@ -4,7 +4,7 @@
 # Created Date: 2021-10-10 9:36
 # Author: Yutong Dai yutongdai95@gmail.com
 # -----
-# Last Modified: 2021-10-11 8:21
+# Last Modified: 2021-10-11 8:35
 # Modified By: Yutong Dai yutongdai95@gmail.com
 # 
 # This code is published under the MIT License.
@@ -20,11 +20,12 @@ mphands = mp.solutions.hands
 hands = mphands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5, max_num_hands=2)
 mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
-
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 _, frame = cap.read()
 bgimage = np.ones_like(frame, dtype=np.uint8) * 225
 h, w, c = frame.shape
-tol=1
+tol=10
 while cap.isOpened():
     success, frame = cap.read()
     if not success:
