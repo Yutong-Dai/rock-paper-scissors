@@ -103,7 +103,7 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
                     # Print results
                     for c in det[:, -1].unique():
                         n = (det[:, -1] == c).sum()  # detections per class
-                        s += '%g %ss, ' % (n, names[int(c)])  # add to string
+                        s += '%g %ss, ' % (n, names[int(c)])
                     # Write results
                     output_dict_ = []
                     for *xyxy, conf, cls in det:
@@ -126,6 +126,7 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
             cv2.namedWindow("RPS GAME", 0)
             cv2.imshow("RPS GAME", im0)
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                # cv2.imwrite("detect.png", im0)
                 break
 
     vid_cap.release()
