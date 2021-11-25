@@ -59,6 +59,10 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
               ) if device.type != 'cpu' else None  # run once
 
     vid_cap = cv2.VideoCapture(0)
+
+    # calculate fps
+    prev_frame_time = 0
+    new_frame_time = 0
     while True:
         ret, img0 = vid_cap.read()
         if ret:
@@ -85,7 +89,8 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
             # only one anchor is responsible for prediction
             pred = non_max_suppression(pred, conf_thres, iou_thres,
                                        classes=None, agnostic=False)
-            for i, det in enumerate(pred):  # detections per image
+            # detections per image
+            for _, det in enumerate(pred):
 
                 s, im0 = '', img0
 
@@ -109,21 +114,22 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
                         label = '%s %.2f' % (names[int(cls)], conf)
                         plot_one_box(xyxy, im0, label=label,
                                      color=colors[int(cls)], line_thickness=3)
-                    print("output_dict_ : ", output_dict_)
+
                 print('%sDone. (%.3fs)' % (s, t2 - t1))
+            # calculate fps
+            new_frame_time = time.time()
+            fps = str(int(1 / (new_frame_time - prev_frame_time)))
+            prev_frame_time = new_frame_time
+            cv2.putText(im0, f"Paper-Rock-Scissors:{fps} FPS", (5, im0.shape[0] - 3), cv2.FONT_HERSHEY_SIMPLEX, 1.2,
+                        (100, 255, 0), 3, cv2.LINE_AA)
 
-            cv2.putText(im0, "Paper-Rock-Scissors", (5,
-                                                     im0.shape[0] - 3), cv2.FONT_HERSHEY_DUPLEX, 1.2, (55, 0, 220), 7)
-            cv2.putText(im0, "Paper-Rock-Scissors", (5,
-                                                     im0.shape[0] - 3), cv2.FONT_HERSHEY_DUPLEX, 1.2, (255, 50, 50), 2)
-
-            cv2.namedWindow("video", 0)
-            cv2.imshow("video", im0)
-            if cv2.waitKey(1) == 27:  # Esc to quit
-                vid_writer.release()
-                raise StopIteration
+            cv2.namedWindow("RPS GAME", 0)
+            cv2.imshow("RPS GAME", im0)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     vid_cap.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
