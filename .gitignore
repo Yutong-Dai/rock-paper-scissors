@@ -1,2 +1,5 @@
 db/*
 reference/*
+.vscode/*
+workspace.code-workspace
+src/archived/*
