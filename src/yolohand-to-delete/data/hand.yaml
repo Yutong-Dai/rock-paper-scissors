@@ -1,0 +1,15 @@
+# Dataset should be placed next to yolov-hand folder:
+#   /parent_folder
+#     /hands
+#     /yolov-hand
+
+
+train: ../hands/images/train
+val: ../hands/images/val
+test: ../hands/images/test
+
+# number of classes
+nc: 1
+
+# class names
+names: ['Hand']
