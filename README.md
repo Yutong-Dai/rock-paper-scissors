@@ -15,7 +15,7 @@ The gesture classification is realized by **Wenxuan add your description here**.
 
 ## Dataset
 
-**Hand Detector**: Datasets for training a hand detector are based on the `TV-Hand` dataset, which  contains hand annotations for 9.5K image frames extracted from the ActionThread dataset and the `COCO-Hand` dataset contains annotations for 25K images of the Microsoft's COCO dataset. 
+**Hand Detector**: Datasets for training a hand detector are based on the `TV-Hand` dataset, which  contains hand annotations for 9,500 images extracted from the `ActionThread` dataset and the `COCO-Hand` dataset contains annotations for 25,000 images of the Microsoft's COCO dataset. 
 
 We provide a glance of the training samples and an example of annotations follow the format
 
