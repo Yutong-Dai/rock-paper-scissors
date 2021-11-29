@@ -8,6 +8,9 @@ import src.yolohand.utils.torch_utils as torch_utils
 sys.path.insert(0, "../src/yolohand")
 from src.yolohand.utils.general import non_max_suppression, scale_coords
 import time
+import tensorflow as tf
+from keras.models import load_model
+classifier_model = load_model('gestures/saved_models/cnn.h5')
 
 
 def plot_one_box(x, img, color=None, label=None, line_thickness=None):
@@ -107,8 +110,28 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
                         output_dict_.append(
                             (float(x1), float(y1), float(x2), float(y2)))
                         label = '%s %.2f' % (names[int(cls)], conf)
+
+                        testimg = im0[(int)(y1):(int)(y2) + 1,
+                                      (int)(x1):(int)(x2) + 1]
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            cv2.imwrite("test.png", testimg)
+                        img_tensor = tf.convert_to_tensor(testimg)
+                        img_tensor = tf.image.resize(img_tensor, (128, 128))
+                        img_tensor = tf.reshape(img_tensor, (1, 128, 128, 3))
+                        print(img_tensor.shape)
+                        pred = classifier_model.predict(img_tensor)
+                        # print(pred)
+                        # add the prediction to the image,paper 0 ,rock 1, scissor 2
+                        text = {
+                            0: "paper",
+                            1: "rock",
+                            2: "scissor"
+                        }
+                        label = text[np.argmax(pred)]
                         plot_one_box(xyxy, im0, label=label,
                                      color=colors[int(cls)], line_thickness=3)
+
+                        # cv2.putText(img0,text[np.argmax(pred)], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
 
                 print('%sDone. (%.3fs)' % (s, t2 - t1))
             # calculate fps
@@ -120,10 +143,11 @@ def detect(weights='yolohand/runs/train/exp/weights/best.pt', half=False, imgsz=
 
             cv2.namedWindow("RPS GAME", 0)
             cv2.imshow("RPS GAME", im0)
-
+            i = 1
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                cv2.imwrite("detect.png", im0)
-                break
+
+                # cv2.imwrite("detect" + str(i) + ".png", im0)
+                i += 1
 
     vid_cap.release()
     cv2.destroyAllWindows()

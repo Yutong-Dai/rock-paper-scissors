@@ -3,3 +3,5 @@ reference/*
 .vscode/*
 workspace.code-workspace
 src/archived/*
+src/saved_models/*
+test/gestures/saved_models/*
