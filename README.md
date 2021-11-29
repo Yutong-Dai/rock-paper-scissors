@@ -140,4 +140,5 @@ Open the ```cnn_train.ipynb``` or ```resnet50.ipynb``` and run the command line 
     - ./test/gestures/saved_models: Save all the trained models which will be used in the real-time detection. (This will not appear on the github due to the file size limits. Run notebook under src/gestures/ will create this folder.)
     - video.py: test trained model's hand detection performance.
     - video_gesture_detect.py: Do real-time gestures classification.        
+- environment.yml: dependencies
 ```
